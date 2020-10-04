@@ -1,5 +1,5 @@
 import {Router} from "express"
-import {addTodo, deleteTodo, getTodos, updateTodo} from "../controllers/todos"
+import {addTodo, deleteTodo, getTodos, updateTodo} from "../controllers/todo"
 import authenticate from "../helper/authenticate";
 
 const todoRouter: Router = Router()

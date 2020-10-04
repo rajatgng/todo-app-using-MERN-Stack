@@ -1,6 +1,6 @@
 import {Request, Response,NextFunction} from "express"
-import {HTTPStatusCode, ITodo} from "../../types"
-import Todo from "../../models/todo"
+import {HTTPStatusCode, ITodo} from "../types"
+import Todo from "../models/todo"
 
 const getTodos = async (req: Request, res: Response,next: NextFunction): Promise<void> => {
     try {

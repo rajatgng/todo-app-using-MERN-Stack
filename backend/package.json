@@ -2,8 +2,8 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "backend for todo app",
-  "main": "app.ts",
   "author": "Rajat Verma",
+  "main": "dist/js/app.js",
   "license": "MIT",
   "scripts": {
     "build": "tsc",

@@ -10,7 +10,6 @@ import path from "path";
 require('dotenv').config();
 const app: Express = express()
 
-
 const PORT: string | number = process.env.PORT || 4000;
 const uri: string = process.env.MONGO_URL || '';
 const options = {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true}
