@@ -4,8 +4,9 @@ import cors from 'cors'
 import bodyParser from "body-parser";
 import logger from 'morgan'
 import router from "./routes";
-import errorHandler from "./helper/error-handler";
+import errorHandler, {ErrorHandler} from "./helper/error-handler";
 import path from "path";
+import {HTTPStatusCode} from "./types";
 
 require('dotenv').config();
 const app: Express = express()
@@ -39,5 +40,11 @@ app.use(logger('dev'));
 app.use(cors());
 
 app.use(router);
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+    throw ErrorHandler(HTTPStatusCode.NotFound, "Route does not exists")
+});
+
+
 app.use(errorHandler)
 
