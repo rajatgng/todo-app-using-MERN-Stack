@@ -30,6 +30,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const routes_1 = __importDefault(require("./routes"));
 const error_handler_1 = __importStar(require("./helper/error-handler"));
 const path_1 = __importDefault(require("path"));
+const socket_io_1 = __importDefault(require("socket.io"));
 require('dotenv').config();
 const app = express_1.default();
 const PORT = process.env.PORT || 4000;
@@ -37,9 +38,37 @@ const uri = process.env.MONGO_URL || '';
 const options = { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true };
 mongoose_1.default.set('useFindAndModify', false);
 mongoose_1.default.set('returnOriginal', false);
+app.use(express_1.default.static("public"));
 mongoose_1.default
     .connect(uri, options)
-    .then(() => app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`)))
+    .then(() => {
+    const server = app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+    // Socket setup
+    //private chat
+    const io = socket_io_1.default(server);
+    const activeUsers = new Set();
+    let people = {};
+    io.on("connection", function (socket) {
+        console.log("Made socket connection");
+        socket.on("new user", function (data) {
+            // socket.id = data;
+            activeUsers.add(data);
+            people[data] = socket.id;
+            io.emit("new user", [...activeUsers]);
+        });
+        socket.on("disconnect", () => {
+            activeUsers.delete(socket.id);
+            io.emit("user disconnected", socket.id);
+        });
+        socket.on("chat message", function (data) {
+            io.to(people[data.to]).emit('chat message', data);
+            // io.emit("chat message", data);
+        });
+        socket.on("typing", function (data) {
+            socket.broadcast.emit("typing", data);
+        });
+    });
+})
     .catch((error) => {
     throw error;
 });
